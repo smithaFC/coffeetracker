@@ -46,6 +46,10 @@ export const CoffeeCounter = () => {
         });
 	};
 
+	const superReset = () => {
+		setState({ count: 0, prevCount: [], lastBrewTime: ''});
+	}
+
 	return (
 		<Container  sx={{height:'75dvh'}}>
 			<Stack justifyContent={'flex-start'} alignItems={'center'} spacing={4} sx={{height:'90%'}}>
@@ -61,8 +65,8 @@ export const CoffeeCounter = () => {
 					</Button>
 				</Stack>
                 <Typography>{`Last brew time: ${state.lastBrewTime}`}</Typography>
-				<Button variant='contained' color='error' onClick={reset}>
-					reset
+				<Button variant='contained' color='warning' onClick={reset}>
+					new day
 				</Button>
 				<Box sx={{maxHeight:'calc(100dvh - 1dvh - 90%)', overflowY:'auto'}}>
                 <ul>
@@ -72,7 +76,12 @@ export const CoffeeCounter = () => {
 				</Box>
                
 			</Stack>
-			<Typography sx={{position:'fixed',height:'10%', bottom:'1em', left:0, textAlign:'center', width:'100%'}}>{`This app is brought to you by Adam. An app you didn't know you wanted`}</Typography>
+			<Stack sx={{position:'fixed',height:'10%', bottom:'1em', left:0, textAlign:'center', width:'100%'}} justifyContent={'center'} alignItems={'center'}>
+			<Typography >{`This app is brought to you by Adam. An app you didn't know you wanted`}</Typography>
+			<Button variant='contained' color='error' onClick={superReset} sx={{maxWidth:'15em'}}>
+					fully clear data
+				</Button>
+			</Stack>
 		</Container>
 	);
 };
@@ -125,4 +134,3 @@ const useLocalStorage = (
 	return [state, setState];
 };
 
-export default useLocalStorage;
