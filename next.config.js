@@ -1,13 +1,11 @@
-import withPWA  from 'next-pwa';
-/** @type {import('next').NextConfig} */
-const nextConfig = withPWA({
+const withPWA = require('next-pwa')({
     dest: "public",
     register: true,
     skipWaiting: true,
-  })({
-    experimental: {
-      newNextLinkBehavior: true,
-    },
+  });
+/** @type {import('next').NextConfig} */
+const nextConfig = withPWA({
+
     output: 'export',
   });
 module.exports = nextConfig
