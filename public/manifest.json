@@ -1,10 +1,10 @@
 {
     "short_name": "FC Coffee",
     "name": "FullCount Coffee Tracker",
-    "start_url": "/",
+    "start_url": "/smithaFC.github.io/",
     "display": "standalone",
     "theme_color": "#565296",
     "background_color": "#ffffff",
-    "id": "/",
+    "id": "/smithaFC.github.io/",
     "scope": "."
   }
