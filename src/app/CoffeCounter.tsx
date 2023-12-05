@@ -1,5 +1,5 @@
 'use client'
-import { Container, Typography, Stack, Button } from '@mui/material';
+import { Container, Typography, Stack, Button, Box } from '@mui/material';
 import React from 'react';
 
 type PrevCoffee = {
@@ -47,8 +47,8 @@ export const CoffeeCounter = () => {
 	};
 
 	return (
-		<Container>
-			<Stack justifyContent={'center'} alignItems={'center'} spacing={4}>
+		<Container  sx={{height:'75dvh'}}>
+			<Stack justifyContent={'flex-start'} alignItems={'center'} spacing={4} sx={{height:'90%'}}>
 				<Typography>FullCount Coffee Tracker v1.0</Typography>
 
 					<Typography>{`Total coffee's brewed: ${state.count}`}</Typography>
@@ -64,12 +64,15 @@ export const CoffeeCounter = () => {
 				<Button variant='contained' color='error' onClick={reset}>
 					reset
 				</Button>
-
+				<Box sx={{maxHeight:'calc(100dvh - 1dvh - 90%)', overflowY:'auto'}}>
                 <ul>
                 {coffeeString(state.prevCount).map(str => (<li key={str}><Typography>{str}</Typography></li>))}
                 </ul>
+
+				</Box>
                
 			</Stack>
+			<Typography sx={{position:'fixed',height:'10%', bottom:'1em', left:0, textAlign:'center', width:'100%'}}>{`This app is brought to you by Adam. An app you didn't know you wanted`}</Typography>
 		</Container>
 	);
 };
