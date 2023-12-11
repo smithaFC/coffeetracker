@@ -1,17 +1,7 @@
 'use client';
 import { CoffeeProvider, useCoffeeContext } from '@/CoffeeTracker/CoffeeContext';
 import { CoffeeBrew, DailyStats } from '@/CoffeeTracker/types';
-import {
-	Box,
-	Card,
-	CardContent,
-	CardHeader,
-	CircularProgress,
-	Container,
-	Divider,
-	Stack,
-	Typography,
-} from '@mui/material';
+import { Box, Card, CardContent, CardHeader, Container, Divider, Stack, Typography } from '@mui/material';
 import { add, format } from 'date-fns';
 import { VictoryAxis, VictoryBar, VictoryChart, VictoryLine } from 'victory';
 
@@ -33,7 +23,6 @@ export default function Analytics() {
 							<PreviousDaysData />
 						</CardContent>
 					</Card>
-					<CircularProgress />
 				</Stack>
 			</Container>
 		</CoffeeProvider>
