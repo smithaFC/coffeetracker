@@ -40,9 +40,8 @@ const enum COFFEE_ACTIONS {
 function coffeeReducer(state: CoffeeContext, { action }: CoffeeAction): CoffeeContext {
 	switch (action) {
 		case COFFEE_ACTIONS.BREW: {
-			const nextValue = state.potsOfCoffeeBrewedToday++;
 			const newCoffee = handleBrewAction(state.todaysBrews);
-			return { ...state, potsOfCoffeeBrewedToday: nextValue, todaysBrews: newCoffee };
+			return { ...state, potsOfCoffeeBrewedToday: newCoffee.length, todaysBrews: newCoffee };
 		}
 		case COFFEE_ACTIONS.UNDO: {
 			const currentCoffees = [...state.todaysBrews];
