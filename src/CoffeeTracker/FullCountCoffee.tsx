@@ -1,3 +1,4 @@
+'use client';
 import { CoffeeProvider } from './CoffeeContext';
 import { CoffeeCounter } from './CoffeeCounter';
 

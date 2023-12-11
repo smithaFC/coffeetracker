@@ -1,7 +1,7 @@
 'use client';
-import { Container, Typography, Stack, Button, Box } from '@mui/material';
+import { Container, Typography, Stack, Button } from '@mui/material';
 import React from 'react';
-import { brewPotFunction, resetTodaysData, undoLastBrew, useCoffeeContext } from './CoffeeContext';
+import { brewPotFunction, undoLastBrew, useCoffeeContext } from './CoffeeContext';
 import Settings from './Settings';
 
 export const CoffeeCounter = () => {
@@ -13,10 +13,6 @@ export const CoffeeCounter = () => {
 
 	const decrememnt = () => {
 		undoLastBrew(dispatch);
-	};
-
-	const restartToday = () => {
-		resetTodaysData(dispatch);
 	};
 
 	function getMostRecentBrewTime() {

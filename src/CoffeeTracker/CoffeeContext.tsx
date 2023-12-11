@@ -1,15 +1,28 @@
 'use client';
-import { Dispatch, PropsWithChildren, ReducerState, createContext, useContext, useEffect, useReducer } from 'react';
+import {
+	Dispatch,
+	PropsWithChildren,
+	ReducerState,
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useReducer,
+	useRef,
+} from 'react';
 import { CoffeeBrew, DailyStats } from './types';
 import { getDate } from './utils';
 import { handleBrewAction } from './ReducerActions';
 import { useCoffeeStorage } from './useCoffeeData';
+import { compareAsc, compareDesc } from 'date-fns';
+import { useNewDay } from './useNewDayJob';
 
 interface CoffeeContext {
 	potsOfCoffeeBrewedToday: number;
 	currentDay: string;
 	todaysBrews: CoffeeBrew[];
-	previousDaysData: DailyStats | [];
+	previousDaysData: DailyStats[];
 	dayToCompare: string;
 }
 export function simpleDateFormatted() {
@@ -37,7 +50,7 @@ const enum COFFEE_ACTIONS {
 	NEW_DAY = 'NEW_DAY',
 }
 
-function coffeeReducer(state: CoffeeContext, { action }: CoffeeAction): CoffeeContext {
+function coffeeReducer(state: CoffeeContext, { action, payload }: CoffeeAction): CoffeeContext {
 	switch (action) {
 		case COFFEE_ACTIONS.BREW: {
 			const newCoffee = handleBrewAction(state.todaysBrews);
@@ -52,25 +65,57 @@ function coffeeReducer(state: CoffeeContext, { action }: CoffeeAction): CoffeeCo
 			return { ...state, todaysBrews: [] };
 		}
 		case COFFEE_ACTIONS.HARD_RESET: {
-			return { ...defaultState };
+			return { ...defaultState, currentDay: simpleDateFormatted() };
 		}
 		case COFFEE_ACTIONS.NEW_DAY: {
-			return { ...state, potsOfCoffeeBrewedToday: 0, currentDay: simpleDateFormatted() };
+			return {
+				...defaultState,
+				currentDay: simpleDateFormatted(),
+				previousDaysData: [...(state.previousDaysData as DailyStats[]), payload as DailyStats],
+			};
 		}
 		default:
 			return { ...state };
 	}
 }
 
+function isNewDay(compareToValue: string) {
+	const lastDate = new Date(compareToValue);
+	const todayDate = new Date(simpleDateFormatted());
+	const compare = compareDesc(lastDate, todayDate);
+	return compare > 0;
+}
+
 function CoffeeProvider(props: PropsWithChildren) {
-	const [localState, setLocalState] = useCoffeeStorage('fcCoffeev2', defaultState);
+	const [localState, setLocalState] = useCoffeeStorage<CoffeeContext>('fcCoffeev2', defaultState);
 	const [state, dispatch] = useReducer(coffeeReducer, {
 		...localState,
 	});
 
+	const intervalRef = useRef<NodeJS.Timeout>();
+	const callbackRef = useRef(() => {});
 	useEffect(() => {
 		setLocalState(state);
 	}, [state, setLocalState]);
+
+	useEffect(() => {
+		const newDayFunction = () => {
+			const newDay = isNewDay(state.currentDay);
+			if (newDay) {
+				const action: CoffeeAction = {
+					action: COFFEE_ACTIONS.NEW_DAY,
+					payload: {
+						count: state.potsOfCoffeeBrewedToday,
+						date: simpleDateFormatted(),
+						brewsForDay: [...state.todaysBrews],
+					},
+				};
+				dispatch(action);
+			}
+		};
+		const id = setInterval(newDayFunction, 30000);
+		return () => clearInterval(id);
+	}, [state]);
 
 	return <CoffeeContext.Provider value={{ coffeeState: state, dispatch }}>{props.children}</CoffeeContext.Provider>;
 }

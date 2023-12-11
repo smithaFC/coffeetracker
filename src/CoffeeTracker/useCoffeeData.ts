@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-export const useCoffeeStorage = (
+import { deserialize, serialize } from 'v8';
+export function useCoffeeStorage<T>(
 	key: string,
-	defaultValue: any,
-	// the = {} fixes the error we would get from destructuring when no argument was passed
-	// Check https://jacobparis.com/blog/destructure-arguments for a detailed explanation
+	defaultValue: T | null,
 	{ serialize = JSON.stringify, deserialize = JSON.parse } = {}
-) => {
-	const [state, setState] = useState(() => {
+): [state: T, setState: any] {
+	const [state, setState] = useState<T>(() => {
 		if (typeof window !== 'undefined') {
 			// Client-side-only code
 			const valueInLocalStorage = window.localStorage.getItem(key);
@@ -36,4 +35,4 @@ export const useCoffeeStorage = (
 	}, [key, state, serialize]);
 
 	return [state, setState];
-};
+}
