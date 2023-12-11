@@ -66,8 +66,6 @@ function CoffeeProvider(props: PropsWithChildren) {
 	const [localState, setLocalState] = useCoffeeStorage('fcCoffeev2', defaultState);
 	const [state, dispatch] = useReducer(coffeeReducer, {
 		...localState,
-		potsOfCoffeeBrewedToday: 0,
-		currentDay: simpleDateFormatted(),
 	});
 
 	useEffect(() => {
