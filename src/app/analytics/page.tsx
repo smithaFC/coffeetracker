@@ -18,7 +18,7 @@ import { VictoryAxis, VictoryBar, VictoryChart, VictoryLine } from 'victory';
 export default function Analytics() {
 	return (
 		<CoffeeProvider>
-			<Container fixed sx={{ height: '100dvh' }}>
+			<Container fixed>
 				<Stack height='inherit' spacing={4} justifyContent={'center'} alignItems={'center'} sx={{ my: 'auto' }}>
 					<Card sx={{ p: '8px' }}>
 						<CardHeader
@@ -30,9 +30,7 @@ export default function Analytics() {
 							}
 						></CardHeader>
 						<CardContent>
-							<Stack spacing={2} justifyContent={'center'}>
-								<PreviousDaysData />
-							</Stack>
+							<PreviousDaysData />
 						</CardContent>
 					</Card>
 					<CircularProgress />
@@ -57,7 +55,7 @@ function PreviousDaysData() {
 				<Box sx={{ width: '100%' }}>
 					<Typography sx={{ textAlign: 'start' }}>Previous days data:</Typography>
 					{coffeeState.previousDaysData.length === 0 && <Typography>No data</Typography>}
-					<Stack flexWrap={'wrap'} direction={'row'} justifyContent={'space-evenly'} alignItems={'center'}>
+					<Stack justifyContent={'center'} spacing={2} alignItems={'center'}>
 						{coffeeState.previousDaysData.map((stat, index) => (
 							<DataCard key={stat.date + index} dailyStats={stat} />
 						))}
@@ -70,15 +68,16 @@ function PreviousDaysData() {
 
 function DataCard({ dailyStats }: { dailyStats: DailyStats }) {
 	return (
-		<Card>
+		<Card sx={{ minHeight: '30em' }}>
 			<CardHeader title={`Data for ${dailyStats.date}`} />
+			<Divider />
 			<CardContent>
+				<Typography>Data:</Typography>
 				<ul>
 					{dailyStats.brewsForDay.map((data) => (
 						<li key={data.timestamp}>{data.timeBrewed}</li>
 					))}
 				</ul>
-
 				<Divider />
 				<DataChart stat={dailyStats} />
 			</CardContent>
@@ -114,7 +113,6 @@ function DataChart({ stat }: { stat: DailyStats }) {
 		return prev;
 	}, {});
 	const dataset = createDataForChart(stat, emptySet);
-
 	return (
 		<VictoryChart>
 			<VictoryAxis
@@ -123,7 +121,7 @@ function DataChart({ stat }: { stat: DailyStats }) {
 				tickValues={[7, 9, 11, 13, 15]}
 				tickFormat={['7:00 AM', '9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM']}
 			/>
-			<VictoryAxis tickFormat={(x) => `${x} Pots`} dependentAxis />
+			<VictoryAxis tickFormat={(x) => `${x} Pots`} tickValues={[1, 2, 3, 4, 5, 6]} dependentAxis />
 			<VictoryLine data={dataset} x='time' y='totals' />
 		</VictoryChart>
 	);

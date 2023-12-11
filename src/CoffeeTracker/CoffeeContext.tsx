@@ -4,9 +4,8 @@ import { CoffeeBrew, DailyStats } from './types';
 import { getDate } from './utils';
 import { handleBrewAction } from './ReducerActions';
 import { useCoffeeStorage } from './useCoffeeData';
-import { compareAsc, compareDesc } from 'date-fns';
-import { useNewDay } from './useNewDayJob';
-
+import { compareDesc } from 'date-fns';
+import { _data } from '@/_test_data/_testData';
 export interface CoffeeContext {
 	potsOfCoffeeBrewedToday: number;
 	currentDay: string;
@@ -28,7 +27,7 @@ const defaultState: CoffeeContext = {
 const CoffeeContext = createContext({});
 
 type CoffeeAction = {
-	payload: DailyStats | DailyStats[] | string | number | null | CoffeeBrew | CoffeeBrew[];
+	payload: DailyStats | DailyStats[] | string | number | null | CoffeeBrew | CoffeeBrew[] | CoffeeContext;
 	action: COFFEE_ACTIONS;
 };
 const enum COFFEE_ACTIONS {
@@ -37,6 +36,7 @@ const enum COFFEE_ACTIONS {
 	HARD_RESET = 'HARD_RESET',
 	UNDO = 'undo',
 	NEW_DAY = 'NEW_DAY',
+	INJECT_TEST_DATA = 'test_Data',
 }
 
 function coffeeReducer(state: CoffeeContext, { action, payload }: CoffeeAction): CoffeeContext {
@@ -65,6 +65,8 @@ function coffeeReducer(state: CoffeeContext, { action, payload }: CoffeeAction):
 				previousDaysData: [...(state.previousDaysData as DailyStats[]), payload as DailyStats],
 			};
 		}
+		case COFFEE_ACTIONS.INJECT_TEST_DATA:
+			return { ...(payload as CoffeeContext), currentDay: simpleDateFormatted() };
 		default:
 			return { ...state };
 	}
@@ -83,8 +85,18 @@ function CoffeeProvider(props: PropsWithChildren) {
 		...localState,
 	});
 
-	const intervalRef = useRef<NodeJS.Timeout>();
-	const callbackRef = useRef(() => {});
+	const initTestData = useRef<boolean>(false);
+	useEffect(() => {
+		if (window && !initTestData.current) {
+			if (window.location.hostname === 'localhost') {
+				initTestData.current = true;
+				const combined = { ...localState, ..._data };
+				const action = { action: COFFEE_ACTIONS.INJECT_TEST_DATA, payload: combined };
+				dispatch(action);
+			}
+		}
+	}, []);
+
 	useEffect(() => {
 		setLocalState(state);
 	}, [state, setLocalState]);
