@@ -1,11 +1,6 @@
-import Image from 'next/image';
+import NavigationBar from './NavBar';
 import styles from './page.module.css';
-import { CoffeeCounter } from './CoffeCounter';
 
 export default function Home() {
-	return (
-		<main className={styles.main}>
-			<CoffeeCounter />
-		</main>
-	);
+	return <main className={styles.main}></main>;
 }
