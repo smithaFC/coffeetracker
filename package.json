@@ -13,7 +13,8 @@
     "@mui/material": "^5.14.20",
     "next": "14.0.3",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "victory": "^36.7.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.11.1",

@@ -1,16 +1,5 @@
 'use client';
-import {
-	Dispatch,
-	PropsWithChildren,
-	ReducerState,
-	createContext,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useReducer,
-	useRef,
-} from 'react';
+import { Dispatch, PropsWithChildren, createContext, useContext, useEffect, useReducer, useRef } from 'react';
 import { CoffeeBrew, DailyStats } from './types';
 import { getDate } from './utils';
 import { handleBrewAction } from './ReducerActions';
@@ -18,7 +7,7 @@ import { useCoffeeStorage } from './useCoffeeData';
 import { compareAsc, compareDesc } from 'date-fns';
 import { useNewDay } from './useNewDayJob';
 
-interface CoffeeContext {
+export interface CoffeeContext {
 	potsOfCoffeeBrewedToday: number;
 	currentDay: string;
 	todaysBrews: CoffeeBrew[];
@@ -53,12 +42,14 @@ const enum COFFEE_ACTIONS {
 function coffeeReducer(state: CoffeeContext, { action, payload }: CoffeeAction): CoffeeContext {
 	switch (action) {
 		case COFFEE_ACTIONS.BREW: {
-			const newCoffee = handleBrewAction(state.todaysBrews);
-			return { ...state, potsOfCoffeeBrewedToday: newCoffee.length, todaysBrews: newCoffee };
+			const newCoffeeList = handleBrewAction(state.todaysBrews);
+			newCoffeeList.sort((a, b) => compareDesc(new Date(a.timeBrewed), new Date(b.timeBrewed)));
+			return { ...state, potsOfCoffeeBrewedToday: newCoffeeList.length, todaysBrews: newCoffeeList };
 		}
 		case COFFEE_ACTIONS.UNDO: {
 			const currentCoffees = [...state.todaysBrews];
 			currentCoffees.shift();
+			currentCoffees.sort((a, b) => compareDesc(new Date(a.timeBrewed), new Date(b.timeBrewed)));
 			return { ...state, todaysBrews: currentCoffees, potsOfCoffeeBrewedToday: currentCoffees.length };
 		}
 		case COFFEE_ACTIONS.RESET_TODAYS: {
