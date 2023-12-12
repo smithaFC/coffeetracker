@@ -13,7 +13,7 @@ import {
 	Typography,
 } from '@mui/material';
 import { add, format } from 'date-fns';
-import { VictoryAxis, VictoryBar, VictoryChart } from 'victory';
+import { VictoryAxis, VictoryBar, VictoryChart, VictoryLine } from 'victory';
 
 export default function Analytics() {
 	return (
@@ -124,7 +124,7 @@ function DataChart({ stat }: { stat: DailyStats }) {
 				tickFormat={['7:00 AM', '9:00 AM', '11:00 AM', '1:00 PM', '3:00 PM']}
 			/>
 			<VictoryAxis tickFormat={(x) => `${x} Pots`} dependentAxis />
-			<VictoryBar data={dataset} x='time' y='totals' />
+			<VictoryLine data={dataset} x='time' y='totals' />
 		</VictoryChart>
 	);
 }
